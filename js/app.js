@@ -1,10 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // TODO: we can also get the grid size from user
   const GRID_WIDTH = 10
   const GRID_HEIGHT = 20
   const GRID_SIZE = GRID_WIDTH * GRID_HEIGHT
 
-  // no need to type 200 divs :)
+  //Se establece la conexion del archivo java con el documento html
+  //llamando e integrando las secciones y valores del documento html 
   const grid = createGrid();
   let squares = Array.from(grid.querySelectorAll('div'))
   const startBtn = document.querySelector('.button')
@@ -30,14 +30,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   function createGrid() {
-    // the main grid
+    // La cuadricula principal
     let grid = document.querySelector(".grid")
     for (let i = 0; i < GRID_SIZE; i++) {
       let gridElement = document.createElement("div")
       grid.appendChild(gridElement)
     }
 
-    // set base of grid
+    // Establece la base de la cuadricula
     for (let i = 0; i < GRID_WIDTH; i++) {
       let gridElement = document.createElement("div")
       gridElement.setAttribute("class", "block3")
@@ -45,8 +45,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     let previousGrid = document.querySelector(".previous-grid")
-    // Since 16 is the max grid size in which all the Tetrominoes 
-    // can fit in we create one here
     for (let i = 0; i < 16; i++) {
       let gridElement = document.createElement("div")
       previousGrid.appendChild(gridElement);
@@ -55,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 
-  //assign functions to keycodes
+  //Asignacion de funciones para las teclas de movimiento
   function control(e) {
     if (e.keyCode === 39)
       moveright()
@@ -67,10 +65,10 @@ document.addEventListener('DOMContentLoaded', () => {
       moveDown()
   }
 
-  // the classical behavior is to speed up the block if down button is kept pressed so doing that
+  // Funcion de aceleracion de los bloques cuando se selecciona abajo
   document.addEventListener('keydown', control)
 
-  //The Tetrominoes
+  //Las figuras de tetris
   const lTetromino = [
     [1, GRID_WIDTH + 1, GRID_WIDTH * 2 + 1, 2],
     [GRID_WIDTH, GRID_WIDTH + 1, GRID_WIDTH + 2, GRID_WIDTH * 2 + 2],
@@ -108,14 +106,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const theTetrominoes = [lTetromino, zTetromino, tTetromino, oTetromino, iTetromino]
 
-  //Randomly Select Tetromino
+  //Salida de aleatoria de figura de tetris
   let random = Math.floor(Math.random() * theTetrominoes.length)
   let current = theTetrominoes[random][currentRotation]
 
 
-  //move the Tetromino moveDown
+  //Mover la figura abajo
   let currentPosition = 4
-  //draw the shape
+  //Dibuja la forma
   function draw() {
     current.forEach(index => {
       squares[currentPosition + index].classList.add('block')
@@ -123,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
   }
 
-  //undraw the shape
+  //Elimina la forma
   function undraw() {
     current.forEach(index => {
       squares[currentPosition + index].classList.remove('block')
@@ -131,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
   }
 
-  //move down on loop
+  //Blucle para mover abajo
   function moveDown() {
     undraw()
     currentPosition = currentPosition += width
@@ -151,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   })
 
-  //move left and prevent collisions with shapes moving left
+  //Movimiento de las figuras a la derecha
   function moveright() {
     undraw()
     const isAtRightEdge = current.some(index => (currentPosition + index) % width === width - 1)
@@ -162,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
     draw()
   }
 
-  //move right and prevent collisions with shapes moving right
+  //Movimiento de las figuras a la izquierda
   function moveleft() {
     undraw()
     const isAtLeftEdge = current.some(index => (currentPosition + index) % width === 0)
@@ -173,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
     draw()
   }
 
-  //freeze the shape
+  //Congela las figuras
   function freeze() {
     // if block has settled
     if (current.some(index => squares[currentPosition + index + width].classList.contains('block3') || squares[currentPosition + index + width].classList.contains('block2'))) {
@@ -192,7 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   freeze()
 
-  //Rotate the Tetromino
+  //Rotacion de las figuras
   function rotate() {
     undraw()
     currentRotation++
@@ -203,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
     draw()
   }
 
-  //Game Over
+  //Fin del juego
   function gameOver() {
     if (current.some(index => squares[currentPosition + index].classList.contains('block2'))) {
       scoreDisplay.innerHTML = 'end'
@@ -211,7 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  //show previous tetromino in scoreDisplay
+  //Demostraccion de las figuras siguientes 
   const displayWidth = 4
   const displaySquares = document.querySelectorAll('.previous-grid div')
   let displayIndex = 0
@@ -235,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
   }
 
-  //Add score
+  //Aumento de puntuacion
   function addScore() {
     for (currentIndex = 0; currentIndex < GRID_SIZE; currentIndex += GRID_WIDTH) {
       const row = [currentIndex, currentIndex + 1, currentIndex + 2, currentIndex + 3, currentIndex + 4, currentIndex + 5, currentIndex + 6, currentIndex + 7, currentIndex + 8, currentIndex + 9]
@@ -249,7 +247,6 @@ document.addEventListener('DOMContentLoaded', () => {
           squares[index].classList.remove('block2') || squares[index].classList.remove('block')
 
         })
-        //splice array
         const squaresRemoved = squares.splice(currentIndex, width)
         squares = squaresRemoved.concat(squares)
         squares.forEach(cell => grid.appendChild(cell))
@@ -257,7 +254,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  //Styling eventListeners
   hamburgerBtn.addEventListener('click', () => {
     menu.style.display = 'flex'
   })
